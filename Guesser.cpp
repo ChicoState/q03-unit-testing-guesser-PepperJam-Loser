@@ -2,6 +2,7 @@
 #include <string>
 
 using std::string;
+using namespace std;
 
 /*
   Returns an whole number representing the distance between the guess,
@@ -15,7 +16,15 @@ using std::string;
   has 100, the distance is 10.
 */
 unsigned int Guesser::distance(string guess){
-  return 0;
+    unsigned int length = 0;
+    size_t smaller = min(m_secret.length(), guess.length());
+    for (size_t i = 0; i < smaller; ++i) {
+        if (m_secret[i] != guess[i]) {
+            length++;
+        }
+    }
+    length += max(m_secret.length(), guess.length()) - smaller;
+  return length;
 }
 
 /*
@@ -25,7 +34,7 @@ unsigned int Guesser::distance(string guess){
   otherwise, it will be truncated at that length.
 */
 Guesser::Guesser(string secret){
-
+    m_secret = secret.substr(0, 31);
 }
 
 /*
@@ -40,7 +49,17 @@ Guesser::Guesser(string secret){
   and the secret.
 */
 bool Guesser::match(string guess){
-  return true;
+    if (remaining() == 0) {
+        return false;
+    }
+    if (distance(guess) > 2) {
+        return false;
+    }
+    if (distance(guess) == 0) {
+        m_remaining = 4;
+        return true;
+    }
+    return true;
 }
 
 /*
@@ -51,6 +70,12 @@ bool Guesser::match(string guess){
   reset to three (3).
 */
 unsigned int Guesser::remaining(){
-  return 0;
+    if (m_remaining > 0) {
+        --m_remaining;
+        return m_remaining;
+    }
+    else {
+        return 0;
+    }
 }
 
